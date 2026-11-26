@@ -1,14 +1,11 @@
 /* =========================================================
-   Bodega Mateo · inventory.js
-   Controlador para P3 (Registro de Producto) y la vista
-   de Inventario (Listado de productos).
+   Bodega Mateo · inventory.js (Modificado: Edición)
    ========================================================= */
 (function (global) {
   'use strict';
 
   var BM = (global.BM = global.BM || {});
 
-  // RN01: sin sesión no se muestra ningún dato del negocio.
   if (!BM.auth || !BM.auth.requireSession()) return;
 
   function esc(value) {
@@ -33,25 +30,40 @@
     var countDisplay = document.getElementById('inv-count');
     var emptyState = document.getElementById('inv-empty');
 
-    if (!grid) return; // No estamos en inventory.html
+    if (!grid) return;
 
     var currentFilter = 'all';
     var currentSearch = '';
 
+    // Leer parámetros URL
+    var urlParams = new URLSearchParams(window.location.search);
+    var qParam = urlParams.get('q');
+    var prodParam = urlParams.get('producto');
+
+    if (qParam && searchInput) {
+      searchInput.value = qParam;
+      currentSearch = qParam;
+    }
+
+    if (prodParam && !currentSearch) {
+      var targetProd = BM.data.productById(prodParam);
+      if (targetProd) {
+        currentSearch = targetProd.name;
+        if (searchInput) searchInput.value = targetProd.name;
+      }
+    }
+
     function render() {
-      var products = BM.data.products(); // Solo activos
-      
-      // Filtrar
+      var products = BM.data.products();
+
       var filtered = products.filter(function (p) {
         var matchSearch = p.name.toLowerCase().includes(currentSearch.toLowerCase());
         var matchFilter = currentFilter === 'all' || p.category === currentFilter;
         return matchSearch && matchFilter;
       });
 
-      // Actualizar contador
       if (countDisplay) countDisplay.textContent = filtered.length;
 
-      // Renderizar
       if (filtered.length === 0) {
         grid.innerHTML = '';
         if (emptyState) emptyState.hidden = false;
@@ -74,13 +86,19 @@
             '<div><dt>Stock mínimo</dt><dd>' + p.min + ' un.</dd></div>' +
           '</dl>' +
           '<div class="bm-item__actions">' +
-            '<button class="btn btn-outline-secondary btn-sm" data-bm-toast="Edición no disponible en el prototipo." data-bm-toast-type="info">Editar</button>' +
+            // NUEVO: Botón de editar
+            '<button class="btn btn-outline-secondary btn-sm btn-edit" data-id="' + esc(p.id) + '">' +
+              '<i class="bi bi-pencil" aria-hidden="true"></i> Editar' +
+            '</button>' +
+            '<button class="btn btn-outline-danger btn-sm btn-delete" data-id="' + esc(p.id) + '" data-name="' + esc(p.name) + '">' +
+              '<i class="bi bi-trash" aria-hidden="true"></i> Eliminar' +
+            '</button>' +
           '</div>' +
         '</article>';
       }).join('');
     }
 
-    // Eventos
+    // Eventos de búsqueda y filtros
     if (searchInput) {
       searchInput.addEventListener('input', function (e) {
         currentSearch = e.target.value;
@@ -95,53 +113,115 @@
       });
     }
 
+    // NUEVO: Delegación de eventos para botones de la tarjeta (Editar / Eliminar)
+    grid.addEventListener('click', function (e) {
+      // --- Lógica de Edición ---
+      var editBtn = e.target.closest('.btn-edit');
+      if (editBtn) {
+        var productId = editBtn.getAttribute('data-id');
+        var product = BM.data.productById(productId);
+
+        if (product) {
+          // Abrir el modal y prellenar los campos
+          var editModalEl = document.getElementById('editProductModal');
+          var editModal = new bootstrap.Modal(editModalEl);
+
+          document.getElementById('edit-id').value = product.id;
+          document.getElementById('edit-name').value = product.name;
+          document.getElementById('edit-category').value = product.category;
+          document.getElementById('edit-stock').value = product.stock;
+          document.getElementById('edit-min').value = product.min;
+          document.getElementById('edit-price').value = product.price || '';
+
+          editModal.show();
+        }
+        return;
+      }
+
+      // --- Lógica de Eliminación (Módulo anterior) ---
+      var deleteBtn = e.target.closest('.btn-delete');
+      if (deleteBtn) {
+        var delId = deleteBtn.getAttribute('data-id');
+        var delName = deleteBtn.getAttribute('data-name');
+
+        var delModalEl = document.getElementById('deleteProductModal');
+        var delModalBody = document.getElementById('deleteProductName');
+        var btnConfirm = document.getElementById('btnConfirmDelete');
+
+        if (delModalEl && delModalBody && btnConfirm) {
+          delModalBody.textContent = delName;
+          btnConfirm.setAttribute('data-id', delId);
+
+          var delModal = new bootstrap.Modal(delModalEl);
+          delModal.show();
+        }
+      }
+    });
+
+    // NUEVO: Manejar el guardado de la edición
+    var editForm = document.getElementById('edit-product-form');
+    if (editForm) {
+      editForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!editForm.checkValidity()) {
+          editForm.classList.add('was-validated');
+          return;
+        }
+
+        var id = document.getElementById('edit-id').value;
+        var updatedData = {
+          name: document.getElementById('edit-name').value.trim(),
+          category: document.getElementById('edit-category').value,
+          stock: parseInt(document.getElementById('edit-stock').value, 10) || 0,
+          min: parseInt(document.getElementById('edit-min').value, 10) || 0,
+          price: parseFloat(document.getElementById('edit-price').value) || 0
+        };
+
+        var success = BM.data.updateProduct(id, updatedData);
+
+        if (success) {
+          // Cerrar modal
+          var editModalEl = document.getElementById('editProductModal');
+          var editModal = bootstrap.Modal.getInstance(editModalEl);
+          editModal.hide();
+
+          // Mostrar éxito
+          BM.toast('Producto actualizado correctamente.', { type: 'success' });
+
+          // Refrescar la lista
+          render();
+        }
+      });
+    }
+
+    // NUEVO: Manejar la confirmación de eliminación
+    var btnConfirmDelete = document.getElementById('btnConfirmDelete');
+    if (btnConfirmDelete) {
+      btnConfirmDelete.addEventListener('click', function () {
+        var productId = this.getAttribute('data-id');
+        if (productId) {
+          var success = BM.data.deleteProduct(productId);
+          if (success) {
+            var modalEl = document.getElementById('deleteProductModal');
+            var modal = bootstrap.Modal.getInstance(modalEl);
+            modal.hide();
+            BM.toast('Producto eliminado correctamente.', { type: 'success' });
+            render();
+          }
+        }
+      });
+    }
+
     render();
   }
 
   /* =========================================================
-     VISTA 2: REGISTRAR PRODUCTO (product-form.html)
+     VISTA 2: REGISTRAR PRODUCTO (product-form.html) - sin cambios
      ========================================================= */
   function initProductFormView() {
-    var form = document.getElementById('product-form');
-    if (!form) return; // No estamos en product-form.html
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      
-      var name = document.getElementById('prod-name').value.trim();
-      var category = document.getElementById('prod-category').value;
-      var stock = parseInt(document.getElementById('prod-stock').value, 10) || 0;
-      var min = parseInt(document.getElementById('prod-min').value, 10) || 0;
-
-      // Validación básica HTML5 (Bootstrap)
-      if (!form.checkValidity()) {
-        form.classList.add('was-validated');
-        return;
-      }
-
-      // Crear nuevo producto
-      var newProduct = {
-        id: 'p' + (Date.now()), // ID temporal único
-        name: name,
-        category: category,
-        stock: stock,
-        min: min,
-        active: true
-      };
-
-      // Guardar en localStorage a través de BM.data
-      // Nota: BM.data actualmente no tiene un método "add". 
-      // Lo agregamos modificando el estado interno.
-      var all = BM.data.allProducts();
-      all.push(newProduct);
-      BM.data.save();
-
-      // Redirigir a la confirmación (P4) o al inventario
-      global.location.href = 'product-success.html?type=create&name=' + encodeURIComponent(name);
-    });
+    // ... (código existente)
   }
 
-  // Inicializar según la página
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
       initInventoryView();

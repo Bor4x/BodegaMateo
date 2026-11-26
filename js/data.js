@@ -143,4 +143,91 @@
     save: save,
     reset: reset
   };
+  /* =========================================================
+   Bodega Mateo · data.js (Modificado: deleteProduct)
+   ========================================================= */
+// ... (código anterior hasta BM.data)
+
+  BM.data = {
+    categories: CATEGORIES,
+    allProducts: function () { return state.products; },
+    products: function () { return state.products.filter(isActive); },   // solo activos (RF04)
+    productById: productById,
+    alerts: function () { return state.alerts; },
+    pendingAlerts: function () {
+      return state.alerts.filter(function (alert) {
+        var product = productById(alert.productId);
+        return alert.status === 'pending' && product && isActive(product);
+      });
+    },
+    save: save,
+    reset: reset,
+
+    // NUEVO MÉTODO: Eliminación lógica (soft delete)
+    deleteProduct: function (productId) {
+      var product = productById(productId);
+      if (product) {
+        product.active = false;
+        // Opcional: Eliminar alertas pendientes asociadas a este producto
+        state.alerts = state.alerts.filter(function (alert) {
+          return alert.productId !== productId;
+        });
+        save();
+        return true;
+      }
+      return false;
+    }
+  };
+  /* =========================================================
+   Bodega Mateo · data.js (Modificado: updateProduct)
+   ========================================================= */
+// ... (código anterior hasta BM.data)
+
+  BM.data = {
+    categories: CATEGORIES,
+    allProducts: function () { return state.products; },
+    products: function () { return state.products.filter(isActive); },
+    productById: productById,
+    alerts: function () { return state.alerts; },
+    pendingAlerts: function () {
+      return state.alerts.filter(function (alert) {
+        var product = productById(alert.productId);
+        return alert.status === 'pending' && product && isActive(product);
+      });
+    },
+    save: save,
+    reset: reset,
+
+    // NUEVO MÉTODO: Actualización de producto
+    updateProduct: function (productId, updatedData) {
+      var product = productById(productId);
+      if (product) {
+        // Actualizar solo los campos permitidos, manteniendo id y active intactos
+        if (updatedData.name !== undefined) product.name = updatedData.name;
+        if (updatedData.category !== undefined) product.category = updatedData.category;
+        if (updatedData.stock !== undefined) product.stock = updatedData.stock;
+        if (updatedData.min !== undefined) product.min = updatedData.min;
+        // El precio es opcional, pero si se envía, se actualiza
+        if (updatedData.price !== undefined) product.price = updatedData.price;
+        
+        save();
+        return true;
+      }
+      return false;
+    },
+
+    // Método de eliminación (del módulo anterior)
+    deleteProduct: function (productId) {
+      var product = productById(productId);
+      if (product) {
+        product.active = false;
+        state.alerts = state.alerts.filter(function (alert) {
+          return alert.productId !== productId;
+        });
+        save();
+        return true;
+      }
+      return false;
+    }
+  };
 })(window);
