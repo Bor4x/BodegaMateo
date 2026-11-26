@@ -46,6 +46,13 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Nunca sirve archivos ocultos: protege .git (trae el token de acceso en su config) y .env
+  if (urlPath.split('/').some((seg) => seg.startsWith('.'))) {
+    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('404 Not Found');
+    return;
+  }
+
   const filePath = path.normalize(path.join(ROOT, urlPath));
 
   // No permite salir del directorio raíz (protección contra path traversal)
