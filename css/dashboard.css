@@ -1,0 +1,207 @@
+/* =========================================================
+   Bodega Mateo · dashboard.css
+   Estilos específicos de P2 (Inicio).
+   Depende de los tokens y componentes de styles.css.
+   ========================================================= */
+
+/* Encabezado del negocio y perfil ------------------------- */
+.bm-dash-hero {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  border-left: 4px solid var(--bm-gold-500);
+}
+.bm-dash-hero__avatar {
+  flex: 0 0 56px;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--bm-ink);
+  border: 3px solid var(--bm-gold-500);
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+.bm-dash-hero__body { flex: 1 1 200px; min-width: 0; }
+.bm-dash-hero__hello { margin: 0; color: var(--bm-muted); font-size: .9rem; }
+.bm-dash-hero__name { margin: 0; font-size: 1.35rem; }
+.bm-dash-hero__meta { margin: .15rem 0 0; color: var(--bm-ink-soft); font-size: .9rem; }
+.bm-dash-hero__date { margin: 0; color: var(--bm-muted); font-size: .85rem; }
+.bm-dash-hero__date::first-letter { text-transform: uppercase; }
+
+/* Notificación visual ------------------------------------- */
+.bm-notice {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  padding: .9rem 1rem;
+  border-radius: var(--bm-radius);
+  background: var(--lvl-bg);
+  border: 1px solid var(--lvl-bd);
+  color: var(--lvl-fg);
+  text-decoration: none;
+  transition: box-shadow .15s ease;
+}
+.bm-notice:hover { color: var(--lvl-fg); box-shadow: var(--bm-shadow-md); }
+.bm-notice__icon {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--lvl-solid);
+  color: #fff;
+  font-size: 1.15rem;
+}
+.bm-notice[data-level="low"] .bm-notice__icon { color: var(--bm-ink); }
+.bm-notice__body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 1.3; }
+.bm-notice__body span { font-size: .85rem; color: var(--bm-ink-soft); }
+.bm-notice__go { font-size: 1.1rem; }
+
+/* Búsqueda ------------------------------------------------ */
+.bm-dash-search {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .75rem;
+}
+
+/* Contadores: 2 columnas en móvil, 4 desde tablet ---------- */
+.bm-dash-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 768px) {
+  .bm-dash-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* Encabezados de sección ---------------------------------- */
+.bm-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-bottom: .75rem;
+}
+.bm-section-head .bm-section-title { margin: 0; }
+.bm-section-link {
+  font-size: .9rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Cuadrícula principal ------------------------------------ */
+.bm-dash-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "actions"
+    "alerts"
+    "featured";
+}
+.bm-dash-actions  { grid-area: actions; }
+.bm-dash-alerts   { grid-area: alerts; }
+.bm-dash-featured { grid-area: featured; }
+
+@media (min-width: 992px) {
+  .bm-dash-grid {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    grid-template-areas:
+      "actions alerts"
+      "featured alerts";
+    align-items: start;
+  }
+}
+
+/* Acciones rápidas ---------------------------------------- */
+.bm-qa-grid {
+  display: grid;
+  gap: .75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 576px) {
+  .bm-qa-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (min-width: 992px) {
+  .bm-qa-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.bm-qa {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .6rem;
+  min-height: 104px;
+  padding: 1rem;
+  background: var(--bm-surface);
+  border: 1px solid var(--bm-border);
+  border-radius: var(--bm-radius);
+  box-shadow: var(--bm-shadow-sm);
+  color: var(--bm-ink);
+  text-decoration: none;
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+.bm-qa:hover {
+  border-color: var(--bm-gold-500);
+  box-shadow: var(--bm-shadow-md);
+  color: var(--bm-ink);
+}
+.bm-qa__icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--bm-gold-100);
+  color: var(--bm-gold-800);
+  font-size: 1.2rem;
+}
+.bm-qa__title { font-weight: 700; line-height: 1.2; }
+.bm-qa__hint {
+  display: block;
+  margin-top: .15rem;
+  color: var(--bm-muted);
+  font-size: .78rem;
+  font-weight: 400;
+  line-height: 1.3;
+}
+.bm-qa .bm-nav-badge { position: absolute; top: .75rem; right: .75rem; }
+
+.bm-qa--primary { background: var(--bm-gold-500); border-color: var(--bm-gold-500); }
+.bm-qa--primary:hover { background: var(--bm-gold-600); border-color: var(--bm-gold-600); }
+.bm-qa--primary .bm-qa__icon { background: rgba(255, 255, 255, .55); color: var(--bm-ink); }
+.bm-qa--primary .bm-qa__hint { color: var(--bm-ink-soft); }
+
+/* Alertas recientes --------------------------------------- */
+.bm-alert-list {
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bm-alert-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem .75rem;
+  padding: .7rem .8rem;
+  background: var(--bm-surface);
+  border: 1px solid var(--bm-border);
+  border-left: 4px solid var(--lvl-solid);
+  border-radius: var(--bm-radius-sm);
+  color: var(--bm-ink);
+  text-decoration: none;
+}
+.bm-alert-row:hover { background: var(--bm-gray-100); color: var(--bm-ink); }
+.bm-alert-row__body { flex: 1 1 140px; min-width: 0; }
+.bm-alert-row__name { display: block; font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; }
+.bm-alert-row__meta { display: block; color: var(--bm-muted); font-size: .8rem; }
+
+/* Pie ----------------------------------------------------- */
+.bm-dash-foot { text-align: center; }

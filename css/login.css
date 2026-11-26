@@ -1,0 +1,82 @@
+/* =========================================================
+   Bodega Mateo · login.css
+   Estilos específicos de P1 (Iniciar sesión).
+   Depende de los tokens y componentes de styles.css.
+   ========================================================= */
+
+.bm-login {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.bm-login__main {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(1.5rem, env(safe-area-inset-top, 0px)) var(--bm-gutter)
+           max(1.5rem, env(safe-area-inset-bottom, 0px));
+}
+.bm-login__main:focus { outline: none; }
+
+.bm-login__card {
+  width: 100%;
+  max-width: 420px;
+  padding: 1.75rem 1.25rem;
+  border-top: 4px solid var(--bm-gold-500);
+  box-shadow: var(--bm-shadow-md);
+}
+@media (min-width: 576px) {
+  .bm-login__card { padding: 2.25rem 2rem; }
+}
+
+.bm-login__mark {
+  width: 64px;
+  height: 64px;
+  flex-basis: 64px;
+  margin: 0 auto 1rem;
+  border-radius: 18px;
+  font-size: 1.9rem;
+}
+
+.bm-login__brand {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -.02em;
+}
+
+.bm-login__system {
+  margin: .35rem 0 0;
+  color: var(--bm-muted);
+  font-size: .9rem;
+}
+
+.bm-login__divider {
+  margin: 1.5rem 0;
+  border-color: var(--bm-border);
+  opacity: 1;
+}
+
+.bm-login__title {
+  margin: 0 0 .25rem;
+  font-size: 1.35rem;
+}
+
+.bm-login__lead {
+  margin-bottom: 1.25rem;
+  color: var(--bm-ink-soft);
+  font-size: .95rem;
+}
+
+.bm-login__error {
+  margin: .75rem 0 0;
+}
+
+.bm-login__foot {
+  margin: 1.25rem 0 0;
+  text-align: center;
+  color: var(--bm-muted);
+  font-size: .85rem;
+}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F5B800">
+  <title>Movimientos · Bodega Mateo</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-bm-active="movement" data-bm-title="Movimientos de Inventario" data-bm-subtitle="Registra entradas o salidas de productos." data-bm-back="dashboard.html">
+  <main id="main-content" class="bm-content" tabindex="-1">
+    <div class="bm-stack">
+      
+      <div class="bm-card mx-auto" style="max-width: 640px;">
+        <form id="movement-form" novalidate>
+          
+          <div class="mb-4">
+            <label class="form-label d-block mb-2">Tipo de movimiento *</label>
+            <div class="d-flex gap-3">
+              <div class="form-check form-check-inline flex-grow-1 border rounded p-3 bg-light">
+                <input class="form-check-input ms-0 me-2" type="radio" name="mov-type-radio" id="type-in" value="in" checked onchange="document.getElementById('mov-type').value='in'">
+                <label class="form-check-label fw-bold w-100" for="type-in" style="cursor: pointer;">
+                  <i class="bi bi-box-arrow-in-down text-success me-1"></i> Entrada (Compra)
+                </label>
+              </div>
+              <div class="form-check form-check-inline flex-grow-1 border rounded p-3 bg-light">
+                <input class="form-check-input ms-0 me-2" type="radio" name="mov-type-radio" id="type-out" value="out" onchange="document.getElementById('mov-type').value='out'">
+                <label class="form-check-label fw-bold w-100" for="type-out" style="cursor: pointer;">
+                  <i class="bi bi-box-arrow-up text-danger me-1"></i> Salida (Venta/Merma)
+                </label>
+              </div>
+            </div>
+            <!-- Select oculto para facilitar el JS -->
+            <select id="mov-type" class="d-none">
+              <option value="in">in</option>
+              <option value="out">out</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="mov-product" class="form-label">Producto *</label>
+            <select class="form-select" id="mov-product" required>
+              <option value="" selected disabled>Selecciona el producto...</option>
+              <!-- Opciones generadas por JS -->
+            </select>
+            <div class="invalid-feedback">Selecciona un producto.</div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6 mb-3">
+              <label for="mov-qty" class="form-label">Cantidad *</label>
+              <input type="number" class="form-control" id="mov-qty" required min="1" value="1">
+              <div class="invalid-feedback">Ingresa una cantidad válida.</div>
+            </div>
+            
+            <div class="col-sm-6 mb-3">
+              <label for="mov-date" class="form-label">Fecha *</label>
+              <input type="date" class="form-control" id="mov-date" required>
+              <div class="invalid-feedback">Selecciona una fecha.</div>
+            </div>
+          </div>
+
+          <div class="alert alert-info py-2 px-3 mb-3" id="mov-stock-hint">
+            <!-- Hint generado por JS -->
+          </div>
+
+          <div class="mb-4">
+            <label for="mov-notes" class="form-label">Notas (Opcional)</label>
+            <textarea class="form-control" id="mov-notes" rows="2" placeholder="Ej. Venta al por mayor, producto dañado, etc."></textarea>
+          </div>
+
+          <div class="d-flex gap-2 justify-content-end">
+            <a href="dashboard.html" class="btn btn-outline-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-primary" id="mov-submit">Registrar Movimiento</button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/stock.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/movements.js"></script>
+</body>
+</html>

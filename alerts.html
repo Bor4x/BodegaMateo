@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F5B800">
+  <title>Alertas Pendientes · Bodega Mateo</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-bm-active="alerts" data-bm-title="Alertas Pendientes" data-bm-subtitle="Productos que necesitan reposición urgente.">
+  <main id="main-content" class="bm-content" tabindex="-1">
+    <div class="bm-stack">
+      
+      <!-- Nota sobre el umbral provisional -->
+      <div class="bm-note">
+        <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+        <span><strong>Criterio provisional.</strong> El stock crítico se calcula como menos de la mitad del stock mínimo. Esta regla está pendiente de confirmar con la propietaria.</span>
+      </div>
+
+      <!-- Filtros -->
+      <div class="bm-chips" id="alerts-chips" data-bm-chips>
+        <button class="bm-chip is-active" data-value="all" aria-pressed="true">Todas las alertas</button>
+        <button class="bm-chip" data-value="out" aria-pressed="false">Agotados</button>
+        <button class="bm-chip" data-value="critical" aria-pressed="false">Críticos</button>
+        <button class="bm-chip" data-value="low" aria-pressed="false">Bajos</button>
+      </div>
+
+      <!-- Contador -->
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <p class="mb-0 text-muted"><strong id="alerts-count">0</strong> productos pendientes</p>
+      </div>
+
+      <!-- Grilla de alertas -->
+      <div class="bm-card-grid" id="alerts-grid">
+        <!-- Renderizado por JS -->
+      </div>
+
+      <!-- Estado vacío -->
+      <div class="bm-empty" id="alerts-empty" hidden>
+        <div class="bm-empty__icon"><i class="bi bi-check2-circle" aria-hidden="true"></i></div>
+        <h3>No hay alertas pendientes</h3>
+        <p class="mb-0">Tu inventario está al día. Los productos con stock bajo aparecerán aquí.</p>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/stock.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/alerts.js"></script>
+</body>
+</html>
